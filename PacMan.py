@@ -1,32 +1,36 @@
-"""Pacman, classic arcade game.
+"""
+Juan Eduardo Rosas Ceron
+A01710168
 
-Exercises
-
-1. Change the board.
-2. Change the number of ghosts.
-3. Change where pacman starts.
-4. Make the ghosts faster/slower.
-5. Make the ghosts smarter.
+Juego: PacMan Free Python games
 """
 
 from random import choice
 from turtle import Turtle, bgcolor, clear, goto, up, dot, update, \
     ontimer, setup, hideturtle, tracer, listen, onkey, done
-
 from freegames import floor, vector
 
+# Se coloca el score en 0
 state = {'score': 0}
+
+# inicializacion para mostrar el camino y la puntiacion
 path = Turtle(visible=False)
 writer = Turtle(visible=False)
+
+# movimiento y posicion inicial de PacMan
 aim = vector(5, 0)
 pacman = vector(-40, -80)
+
+# movimiento y posicion inicial de los fantasmas
 ghosts = [
     [vector(-180, 160), vector(20, 0)],
     [vector(-180, -160), vector(0, 20)],
     [vector(100, 160), vector(0, -20)],
     [vector(100, -160), vector(-20, 0)],
 ]
-# fmt: off
+
+# representacion del tablero de juego en un arreglo de casillas
+# 1 camino 0 pared
 tiles = [
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
@@ -49,33 +53,29 @@ tiles = [
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 ]
-# fmt: on
 
-
+# dibuja un cuadrado en la posicion x y
 def square(x, y):
-    """Draw square using path at (x, y)."""
     path.up()
     path.goto(x, y)
     path.down()
     path.begin_fill()
 
-    for count in range(4):
+    for _ in range(4):
         path.forward(20)
         path.left(90)
 
     path.end_fill()
 
-
+# regresa el indice de un punto en el tablero
 def offset(point):
-    """Return offset of point in tiles."""
     x = (floor(point.x, 20) + 200) / 20
     y = (180 - floor(point.y, 20)) / 20
     index = int(x + y * 20)
     return index
 
-
+# verifica si el punto esta dentro del tablero
 def valid(point):
-    """Return True if point is valid in tiles."""
     index = offset(point)
 
     if tiles[index] == 0:
@@ -88,9 +88,8 @@ def valid(point):
 
     return point.x % 20 == 0 or point.y % 20 == 0
 
-
+# dibuja el tablero usando el arreglo de casillas
 def world():
-    """Draw world using path."""
     bgcolor('black')
     path.color('blue')
 
@@ -107,9 +106,8 @@ def world():
                 path.goto(x + 10, y + 10)
                 path.dot(2, 'white')
 
-
+# mueve a PacMan y a los fantasmas en cada frame del juego
 def move():
-    """Move pacman and all ghosts."""
     writer.undo()
     writer.write(state['score'])
 
@@ -131,6 +129,7 @@ def move():
     goto(pacman.x + 10, pacman.y + 10)
     dot(20, 'yellow')
 
+    # mueve a los fantasmas
     for point, course in ghosts:
         if valid(point + course):
             point.move(course)
@@ -150,20 +149,20 @@ def move():
 
     update()
 
+    # verifica si PacMan colisiona con algun fantasma
     for point, course in ghosts:
         if abs(pacman - point) < 20:
             return
 
     ontimer(move, 100)
 
-
+# cambia la direccion de PacMan si la direccion es valida
 def change(x, y):
-    """Change pacman aim if valid."""
     if valid(pacman + vector(x, y)):
         aim.x = x
         aim.y = y
 
-
+# configuracion inicial de la partida
 setup(420, 420, 370, 0)
 hideturtle()
 tracer(False)
