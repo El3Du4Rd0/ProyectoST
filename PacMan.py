@@ -54,6 +54,7 @@ tiles = [
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 ]
 
+
 # dibuja un cuadrado en la posicion x y
 def square(x, y):
     path.up()
@@ -67,12 +68,14 @@ def square(x, y):
 
     path.end_fill()
 
+
 # regresa el indice de un punto en el tablero
 def offset(point):
     x = (floor(point.x, 20) + 200) / 20
     y = (180 - floor(point.y, 20)) / 20
     index = int(x + y * 20)
     return index
+
 
 # verifica si el punto esta dentro del tablero
 def valid(point):
@@ -87,6 +90,7 @@ def valid(point):
         return False
 
     return point.x % 20 == 0 or point.y % 20 == 0
+
 
 # dibuja el tablero usando el arreglo de casillas
 def world():
@@ -105,6 +109,7 @@ def world():
                 path.up()
                 path.goto(x + 10, y + 10)
                 path.dot(2, 'white')
+
 
 # mueve a PacMan y a los fantasmas en cada frame del juego
 def move():
@@ -155,6 +160,7 @@ def move():
             return
 
     ontimer(move, 100)
+
 
 # cambia la direccion de PacMan si la direccion es valida
 def change(x, y):
