@@ -47,6 +47,9 @@ def floor(value):
     return ((value + 200) // 133) * 133 - 200
 
 
+# Lista para llevar el registro de posiciones ocupadas
+occupied = []
+
 state = {'player': 0}
 players = [drawx, drawo]
 
@@ -55,11 +58,20 @@ def tap(x, y):
     """Draw X or O in tapped square."""
     x = floor(x)
     y = floor(y)
+
+    # Verifica si la posición ya está ocupada
+    if (x, y) in occupied:  # <- Verificación que impide volver a colocar un símbolo
+        print("Casilla ocupada, elige otra.")  # <- Mensaje de aviso
+        return  # <- Evita cualquier acción adicional
+
+    occupied.append((x, y))  # Añadir la posición a la lista de ocupados
     player = state['player']
     draw = players[player]
     draw(x, y)
     update()
     state['player'] = not player
+
+
 
 
 setup(420, 420, 370, 0)
