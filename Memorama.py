@@ -34,6 +34,7 @@ tiles = list(range(10)) * 2  # Lista de pares de números (10 pares)
 state = {'mark': None, 'taps': 0}  # Estado del juego
 hide = [True] * 20  # Lista que indica si las fichas están ocultas
 
+
 def square(x, y):
     """Dibuja un cuadrado blanco con borde negro en la posición (x, y)."""
     up()  # Levanta el lápiz para moverlo sin dibujar
@@ -46,13 +47,16 @@ def square(x, y):
         left(90)  # Gira 90 grados a la izquierda
     end_fill()  # Termina el relleno del cuadrado
 
+
 def index(x, y):
     """Convierte las coordenadas (x, y) al índice de una ficha."""
     return int((x + 100) // 50 + ((y + 100) // 50) * 4)
 
+
 def xy(count):
     """Convierte el índice de una ficha a coordenadas (x, y)."""
     return (count % 4) * 50 - 100, (count // 4) * 50 - 100
+
 
 def tap(x, y):
     """Actualiza la marca y las fichas ocultas basadas en un clic."""
@@ -68,6 +72,12 @@ def tap(x, y):
         hide[spot] = False
         hide[mark] = False
         state['mark'] = None  # Resetea la marca
+
+
+def all_revealed():
+    """Verifica si todas las fichas han sido reveladas."""
+    return all(not h for h in hide)
+
 
 def draw():
     """Dibuja la imagen de fondo y las fichas del juego."""
@@ -98,10 +108,17 @@ def draw():
     color('black')
     write(f'Taps: {state["taps"]}', font=('Arial', 16, 'normal'))
 
+    # Verifica si todas las fichas han sido reveladas
+    if all_revealed():
+        up()
+        goto(0, -250)
+        color('green')
+        write('¡Ganaste!', font=('Arial', 30, 'normal'))  # Mensaje de victoria
+
     update()  # Actualiza la pantalla
     ontimer(draw, 100)  # Llama a la función `draw` cada 100 ms
 
-# Configuración inicial del tablero de juego
+
 shuffle(tiles)  # Mezcla las fichas aleatoriamente
 setup(500, 500, 370, 0)  # Configura el tamaño y la posición de la ventana
 addshape(car)  # Añade la imagen del coche al juego
