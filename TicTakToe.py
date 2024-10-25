@@ -1,10 +1,12 @@
-from turtle import *
-
+from turtle import (
+    pencolor, width, up, goto, down, circle, update, setup,
+    hideturtle, tracer, onscreenclick, done
+)
 from freegames import line
 
 
 def grid():
-    """Draw tic-tac-toe grid."""
+    """Coloca el grid o rejillas de juego."""
     line(-67, 200, -67, -200)
     line(67, 200, 67, -200)
     line(-200, -67, 200, -67)
@@ -12,7 +14,7 @@ def grid():
 
 
 def drawx(x, y):
-    """Draw X player with specific color and width."""
+    """Coloca X y con sus parámetros."""
     pencolor("blue")  # Cambia el color de la X
     width(4)  # Cambia el grosor de la X
     up()
@@ -26,7 +28,7 @@ def drawx(x, y):
 
 
 def drawo(x, y):
-    """Draw O player with specific color and width."""
+    """Coloca O y con sus parámetros."""
     pencolor("red")  # Cambia el color de la O
     width(4)  # Cambia el grosor de la O
     up()
@@ -36,14 +38,6 @@ def drawo(x, y):
 
 
 def floor(value):
-    """Round the given value down to the nearest Tic-Tac-Toe grid square.
-
-    Args:
-        value (int): The coordinate value to be rounded.
-
-    Returns:
-        int: The coordinate aligned to the grid.
-    """
     return ((value + 200) // 133) * 133 - 200
 
 
@@ -55,14 +49,14 @@ players = [drawx, drawo]
 
 
 def tap(x, y):
-    """Draw X or O in tapped square."""
+    """Coloca X o O en la casilla seleccionada."""
     x = floor(x)
     y = floor(y)
 
     # Verifica si la posición ya está ocupada
-    if (x, y) in occupied:  # <- Verificación que impide volver a colocar un símbolo
-        print("Casilla ocupada, elige otra.")  # <- Mensaje de aviso
-        return  # <- Evita cualquier acción adicional
+    if (x, y) in occupied:  # Verificación que impide volver a colocar un símbolo
+        print("Casilla ocupada, elige otra.")  # Mensaje de aviso
+        return  # Evita cualquier acción adicional
 
     occupied.append((x, y))  # Añadir la posición a la lista de ocupados
     player = state['player']
@@ -70,8 +64,6 @@ def tap(x, y):
     draw(x, y)
     update()
     state['player'] = not player
-
-
 
 
 setup(420, 420, 370, 0)
