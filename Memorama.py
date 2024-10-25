@@ -1,96 +1,112 @@
-"""Memory, puzzle game of number pairs.
+"""Memory, juego de pares numéricos con 10 pares.
 
-Exercises:
+Este es un juego de memoria donde se deben hacer coincidir
 
-1. Count and print how many taps occur.
-2. Decrease the number of tiles to a 4x4 grid.
-3. Detect when all tiles are revealed.
-4. Center single-digit tile.
-5. Use letters instead of tiles.
+10 pares de números. El juego utiliza un tablero con cuadrados
+
+ocultos que se revelan al hacer clic en ellos.
+
+Ejercicios:
+
+1. Contar e imprimir cuántos clics se realizan.
+
+2. Reducir el número de fichas a una cuadrícula de 4x4.
+
+3. Detectar cuando todas las fichas están reveladas.
+
+4. Centrar la ficha de un solo dígito.
+
+5. Usar letras en lugar de números.
 """
 
+# Librerías
 from random import shuffle
+from freegames import path
 from turtle import (
     up, goto, down, color, begin_fill, forward, left,
     end_fill, clear, shape, stamp, write, update, ontimer,
     setup, addshape, hideturtle, tracer, onscreenclick, done
-
 )
 
-from freegames import path
-
+# Configuración inicial del juego
 car = path('car.gif')
-tiles = list(range(32)) * 2
-state = {'mark': None}
-hide = [True] * 64
-
+tiles = list(range(10)) * 2  # Lista de pares de números (10 pares)
+state = {'mark': None, 'taps': 0}  # Estado del juego
+hide = [True] * 20  # Lista que indica si las fichas están ocultas
 
 def square(x, y):
-    """Draw white square with black outline at (x, y)."""
-    up()
-    goto(x, y)
-    down()
-    color('black', 'white')
-    begin_fill()
-    for count in range(4):
-        forward(50)
-        left(90)
-    end_fill()
-
+    """Dibuja un cuadrado blanco con borde negro en la posición (x, y)."""
+    up()  # Levanta el lápiz para moverlo sin dibujar
+    goto(x, y)  # Mueve el lápiz a la posición (x, y)
+    down()  # Baja el lápiz para empezar a dibujar
+    color('black', 'white')  # Define el color del borde y del relleno
+    begin_fill()  # Inicia el relleno del cuadrado
+    for count in range(4):  # Dibuja un cuadrado de 4 lados
+        forward(50)  # Avanza 50 píxeles
+        left(90)  # Gira 90 grados a la izquierda
+    end_fill()  # Termina el relleno del cuadrado
 
 def index(x, y):
-    """Convert (x, y) coordinates to tiles index."""
-    return int((x + 200) // 50 + ((y + 200) // 50) * 8)
-
+    """Convierte las coordenadas (x, y) al índice de una ficha."""
+    return int((x + 100) // 50 + ((y + 100) // 50) * 4)
 
 def xy(count):
-    """Convert tiles count to (x, y) coordinates."""
-    return (count % 8) * 50 - 200, (count // 8) * 50 - 200
-
+    """Convierte el índice de una ficha a coordenadas (x, y)."""
+    return (count % 4) * 50 - 100, (count // 4) * 50 - 100
 
 def tap(x, y):
-    """Update mark and hidden tiles based on tap."""
-    spot = index(x, y)
-    mark = state['mark']
+    """Actualiza la marca y las fichas ocultas basadas en un clic."""
+    state['taps'] += 1  # Incrementa el contador de clics
+    spot = index(x, y)  # Determina qué ficha se ha clicado
+    mark = state['mark']  # Obtiene la marca actual
 
+    # Actualiza la marca
     if mark is None or mark == spot or tiles[mark] != tiles[spot]:
         state['mark'] = spot
     else:
+        # Si se hace clic en un par correcto, revela ambas fichas
         hide[spot] = False
         hide[mark] = False
-        state['mark'] = None
-
+        state['mark'] = None  # Resetea la marca
 
 def draw():
-    """Draw image and tiles."""
-    clear()
-    goto(0, 0)
-    shape(car)
-    stamp()
+    """Dibuja la imagen de fondo y las fichas del juego."""
+    clear()  # Limpia la pantalla
+    goto(0, 0)  # Coloca el lápiz en el centro
+    shape(car)  # Cambia la forma del cursor a la imagen del coche
+    stamp()  # Imprime la imagen en la pantalla
 
-    for count in range(64):
-        if hide[count]:
-            x, y = xy(count)
-            square(x, y)
+    # Dibuja las fichas en el tablero
+    for count in range(20):
+        if hide[count]:  # Dibuja solo las fichas que están ocultas
+            x, y = xy(count)  # Calcula las coordenadas de la ficha
+            square(x, y)  # Dibuja la ficha
 
-    mark = state['mark']
+    mark = state['mark']  # Obtiene la marca actual
 
+    # Si hay una marca seleccionada, muestra su número
     if mark is not None and hide[mark]:
         x, y = xy(mark)
         up()
-        goto(x + 2, y)
-        color('black')
-        write(tiles[mark], font=('Arial', 30, 'normal'))
+        goto(x + 2, y)  # Centra el número en la ficha
+        color('black')  # Establece el color del texto
+        write(tiles[mark], font=('Arial', 30, 'normal'))  # Escribe el número
 
-    update()
-    ontimer(draw, 100)
+    # Muestra el número de clics realizados
+    up()
+    goto(-200, 200)
+    color('black')
+    write(f'Taps: {state["taps"]}', font=('Arial', 16, 'normal'))
 
+    update()  # Actualiza la pantalla
+    ontimer(draw, 100)  # Llama a la función `draw` cada 100 ms
 
-shuffle(tiles)
-setup(420, 420, 370, 0)
-addshape(car)
-hideturtle()
-tracer(False)
-onscreenclick(tap)
-draw()
-done()
+# Configuración inicial del tablero de juego
+shuffle(tiles)  # Mezcla las fichas aleatoriamente
+setup(500, 500, 370, 0)  # Configura el tamaño y la posición de la ventana
+addshape(car)  # Añade la imagen del coche al juego
+hideturtle()  # Oculta el cursor
+tracer(False)  # Desactiva la animación para mejorar el rendimiento
+onscreenclick(tap)  # Llama a la función `tap` al hacer clic en la pantalla
+draw()  # Inicia el bucle de dibujo del juego
+done()  # Termina el programa cuando se cierra la ventana
